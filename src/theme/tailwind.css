@@ -1,0 +1,191 @@
+/*
+ * Cascade order: Ionic's global CSS sits in the lowest layer so Tailwind
+ * utilities always win over it. Tailwind's preflight is intentionally not
+ * loaded: its `*` reset would override styles inside Ionic's shadow DOM.
+ * A small reset lives in the `base` layer below instead.
+ */
+@layer ionic, theme, base, components, utilities;
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/vue/css/core.css" layer(ionic);
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/vue/css/normalize.css" layer(ionic);
+@import "@ionic/vue/css/structure.css" layer(ionic);
+@import "@ionic/vue/css/typography.css" layer(ionic);
+
+/* Optional Ionic CSS utils */
+@import "@ionic/vue/css/padding.css" layer(ionic);
+@import "@ionic/vue/css/display.css" layer(ionic);
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/*
+ * Shipzy design tokens (sampled from the Figma exports).
+ * The design is light-only.
+ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Primary action blue: Log In, Continue, filter chips, links */
+  --color-primary-50: #eef4ff;
+  --color-primary-100: #dfe9ff;
+  --color-primary-200: #c0d6ff;
+  --color-primary-300: #97bafa;
+  --color-primary-400: #5b8fff;
+  --color-primary-500: #2a72ff;
+  --color-primary-600: #0b5fff;
+  --color-primary-700: #084ed6;
+  --color-primary-800: #0a3fa8;
+
+  /* Deep teal: tab bar centre, status icons, detail-page actions, totals */
+  --color-ocean-50: #f2f8fc;
+  --color-ocean-100: #e1ebf0;
+  --color-ocean-200: #a2c2d1;
+  --color-ocean-500: #297294;
+  --color-ocean-600: #0a5e84;
+  --color-ocean-700: #084b6a;
+
+  /* Text */
+  --color-ink: #00093a;
+  --color-ink-2: #0b122c;
+  --color-ink-muted: #4e5471;
+  --color-ink-subtle: #9ca3af;
+
+  /* Surfaces & lines */
+  --color-bg: #f9fbff;
+  --color-surface: #ffffff;
+  --color-soft: #f7f9fc;
+  --color-soft-2: #f0f3f7;
+  --color-line: #d7deea;
+  --color-line-soft: #eceef1;
+
+  /* Status */
+  --color-success: #0d9742;
+  --color-success-soft: #eefbf4;
+  --color-danger: #eb4335;
+  --color-danger-soft: #fdeeed;
+  --color-warning: #e2884b;
+  --color-warning-soft: #fef7e9;
+  --color-amber: #f5a00b;
+  --color-amber-soft: #fffaee;
+  --color-violet: #7c3aed;
+  --color-violet-soft: #f8f2ff;
+
+  --shadow-card: 0 1px 3px rgb(0 9 58 / 0.06), 0 4px 14px rgb(0 9 58 / 0.04);
+  --shadow-nav: 0 -2px 20px rgb(0 9 58 / 0.08);
+}
+
+/* Bridge tokens into Ionic so native components match */
+:root {
+  color-scheme: light;
+  --ion-font-family: var(--font-sans);
+  --ion-background-color: #f9fbff;
+  --ion-text-color: #00093a;
+  --ion-color-primary: #0b5fff;
+  --ion-color-primary-rgb: 11, 95, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #084ed6;
+  --ion-color-primary-tint: #2a72ff;
+}
+
+@layer base {
+  /* Preflight's border reset, limited to plain HTML elements so Ionic's
+     shadow-DOM hosts keep their own borders. Makes `border-dashed` etc. safe. */
+  :where(div, span, p, a, li, ul, ol, section, article, header, footer, nav, main, aside, form, label, img, hr, h1, h2, h3, h4, h5, h6),
+  :where(div, span, p, a, li, section, article, header, footer, label)::before,
+  :where(div, span, p, a, li, section, article, header, footer, label)::after {
+    border-width: 0;
+    border-style: solid;
+  }
+  h1, h2, h3, h4, h5, h6, p, figure, blockquote, ol, ul, dl, dd {
+    margin: 0;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  ol, ul {
+    padding: 0;
+    list-style: none;
+  }
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+  button, input, textarea, select {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
+  button {
+    cursor: pointer;
+  }
+  img, svg, canvas {
+    display: block;
+    max-width: 100%;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.55;
+  }
+}
+
+/* ---------- Reusable component utilities ---------- */
+
+@utility card {
+  @apply rounded-2xl border border-line-soft bg-surface shadow-card;
+}
+
+/* Small grey info box used for label/value pairs inside cards */
+@utility tile {
+  @apply rounded-lg border border-line-soft bg-soft px-2.5 py-2;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility btn-primary {
+  @apply btn bg-primary-600 text-white active:bg-primary-700;
+}
+
+@utility btn-ocean {
+  @apply btn bg-ocean-600 text-white active:bg-ocean-700;
+}
+
+@utility btn-outline {
+  @apply btn border border-line bg-surface text-ink active:bg-soft;
+}
+
+@utility btn-outline-ocean {
+  @apply btn border border-ocean-600 bg-surface text-ocean-600 active:bg-ocean-50;
+}
+
+/* Square white back button used on detail and settings pages */
+@utility btn-back {
+  @apply inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-line bg-surface text-ink transition active:scale-95;
+}
+
+@utility input {
+  @apply h-12 w-full rounded-xl border border-line bg-surface px-4 text-sm text-ink outline-none placeholder:text-ink-subtle focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10;
+}
+
+@utility field-label {
+  @apply mb-2 block text-[15px] font-semibold text-ink;
+}
+
+@utility chip {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold;
+}
+
+@utility pt-safe {
+  padding-top: max(env(safe-area-inset-top), 1rem);
+}
+
+@utility pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+}
